@@ -1,18 +1,24 @@
 import asyncHandler from "express-async-handler"
 import userModel from "../models/userModel.js"
+import jwt from "jsonwebtoken"
 
 let loginUser = async (req,res) =>{
-    let { username, email } = req.body;
-    if(!username || !email){
+    let { username, password } = req.body;
+    if(!username || !password){
         res.status(400);
     }
-    let user = await userModel.findOne({ username: username, email: email });
+    let user = await userModel.findOne({ username: username, password: password });
     
     if(!user){
         console.log(user);
         res.status(400).json({ message: "User not found"});
     }else{
         res.status(200).json({ message: "Login successful"});
+        // let accT = jwt.sign({    Embed jwt
+        //     user:{
+        //         username: user.username,
+        //     }
+        // })
     }
 
 }
