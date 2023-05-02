@@ -1,3 +1,4 @@
+import "dotenv/config";
 import asyncHandler from "express-async-handler"
 import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
@@ -14,19 +15,22 @@ let loginUser = async (req,res) =>{
         res.status(400).json({ message: "User not found"});
     }else{
         res.status(200).json({ message: "Login successful"});
-        // let accT = jwt.sign({    Embed jwt
-        //     user:{
-        //         username: user.username,
-        //     }
-        // })
+        let accT = jwt.sign({    
+            user:{
+                username: user.username,
+                password: user.password,
+                email: user.email
+            }
+        },process.env.JWT_TOKEN,{ expiresIn: "3m"});
     }
 
 }
 
 let getUser = asyncHandler(async (req,res)=>{
-    let all = await userModel.find();
+    // let all = await userModel.find();
 
-    res.send(JSON.stringify(all))
+    res.send(JSON.stringify(all));
+    //res.send(process.env.NAME_USERNAME);
 })
 
 let createUser = asyncHandler(async (req,res)=>{
