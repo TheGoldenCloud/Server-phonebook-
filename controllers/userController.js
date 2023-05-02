@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler"
 import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 
-let loginUser = async (req,res) =>{
+let loginUser = asyncHandler(async (req,res) =>{
     let { username, password } = req.body;
     if(!username || !password){
         res.status(400);
@@ -14,21 +14,36 @@ let loginUser = async (req,res) =>{
         console.log(user);
         res.status(400).json({ message: "User not found"});
     }else{
-        res.status(200).json({ message: "Login successful"});
+        // res.status(200).json({ message: "Login successful"});
+        
         let accT = jwt.sign({    
             user:{
                 username: user.username,
-                password: user.password,
-                email: user.email
+                password: user.password
             }
-        },process.env.JWT_TOKEN,{ expiresIn: "3m"});
+        },process.env.JWT_TOKEN,{ expiresIn: "5m"});
+        res.status(200).json(accT); 
     }
 
-}
+});
+
+let verifyToken = asyncHandler (async (req, res, next) => {
+    let token;
+    let oathHeader = req.headers.Auth;
+    if(oathHeader && oathHeader.startsWith("Bearer")){
+        token = oathHeader.split(" ")[1];
+        jwt.verify(token,process.env.JWT_TOKEN,(err,decodded) => {
+            if(err) {
+                res.status(401);
+            }
+        });
+         
+    }
+})
 
 let getUser = asyncHandler(async (req,res)=>{
     // let all = await userModel.find();
-
+    
     res.send(JSON.stringify(all));
     //res.send(process.env.NAME_USERNAME);
 })
