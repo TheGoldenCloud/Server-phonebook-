@@ -1,5 +1,6 @@
 import express from 'express';
 import conntion from './db/databaseCon.js'
+import "dotenv/config";
 
 import contactRoute from './routes/contactRours.js'
 import userRoute from './routes/userRouts.js'
@@ -14,6 +15,6 @@ app.use(bodyParser.json())   //Da bi se dobio req.body od klijenta
 app.use(contactRoute);
 app.use(userRoute);
 
-app.listen(4000,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("Server started at port 4000");
 })
