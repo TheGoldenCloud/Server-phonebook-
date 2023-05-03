@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import "dotenv/config"
 
 let connection = async function(){
     try{
-        await mongoose.connect('mongodb+srv://Admin:admin123@cluster123.pezdpf0.mongodb.net/?retryWrites=true&w=majority');
+        await mongoose.connect(process.env.CONNECTION_STRING);
         console.log("Database connected");
     }catch(err){
         console.log(err);
