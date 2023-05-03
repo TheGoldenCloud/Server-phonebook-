@@ -21,7 +21,7 @@ let loginUser = asyncHandler(async (req,res) =>{
                 username: user.username,
                 password: user.password
             }
-        },process.env.JWT_TOKEN,{ expiresIn: "5m"});
+        },process.env.JWT_TOKEN,{ expiresIn: "10m"});
         res.status(200).json(accT); 
     }
 
@@ -32,19 +32,22 @@ let verifyToken = asyncHandler (async (req, res, next) => {
     let oathHeader = req.headers.Auth;
     if(oathHeader && oathHeader.startsWith("Bearer")){
         token = oathHeader.split(" ")[1];
-        jwt.verify(token,process.env.JWT_TOKEN,(err,decodded) => {
+        jwt.verify(token,process.env.JWT_TOKEN,(err,user) => {
             if(err) {
                 res.status(401);
+            }else{
+                // req.body = user;
+                next();
             }
         });
          
     }
 })
 
-let getUser = asyncHandler(async (req,res)=>{
-    // let all = await userModel.find();
+let getUser = asyncHandler(async (req,res)=>{   //Get users
+    let all = await userModel.find();
     
-    res.send(JSON.stringify(all));
+    res.send(all);  //
     //res.send(process.env.NAME_USERNAME);
 })
 
@@ -94,4 +97,4 @@ let deleteUser = asyncHandler(async(req,res)=>{
 
 })
 
-export { getUser,createUser,getUserById,updateUser,deleteUser,loginUser }
+export { getUser,createUser,getUserById,updateUser,deleteUser,loginUser,verifyToken }
