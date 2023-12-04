@@ -2,12 +2,11 @@ import "dotenv/config";
 import asyncHandler from "express-async-handler"
 import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
+//Dodaj enkripciju!!!
 
 let loginUser = asyncHandler(async (req,res) =>{
     let { username, password } = req.body;
-    if(!username || !password){
-        res.status(400);
-    }
+
     let user = await userModel.findOne({ username: username, password: password });
     
     if(!user){
@@ -21,7 +20,7 @@ let loginUser = asyncHandler(async (req,res) =>{
                 username: user.username,
                 password: user.password
             }
-        },process.env.JWT_TOKEN,{ expiresIn: "10m"});
+        },process.env.JWT_TOKEN,{ expiresIn: "2m"});
         res.status(200).json(accT); 
     }
 
@@ -29,26 +28,24 @@ let loginUser = asyncHandler(async (req,res) =>{
 
 let verifyToken = asyncHandler (async (req, res, next) => {
     let token;
-    let oathHeader = req.headers.Auth;
+    let oathHeader = req.headers.authorization
     if(oathHeader && oathHeader.startsWith("Bearer")){
         token = oathHeader.split(" ")[1];
         jwt.verify(token,process.env.JWT_TOKEN,(err,user) => {
             if(err) {
                 res.status(401);
             }else{
-                // req.body = user;
+                req.body = user;
                 next();
             }
         });
+        
          
     }
 })
 
 let getUser = asyncHandler(async (req,res)=>{   //Get users
-    let all = await userModel.find();
-    
-    res.send(all);  //
-    //res.send(process.env.NAME_USERNAME);
+    res.json(req.body.user);
 })
 
 let createUser = asyncHandler(async (req,res)=>{
