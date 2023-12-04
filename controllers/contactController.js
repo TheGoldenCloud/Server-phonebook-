@@ -19,7 +19,9 @@ let getContactById = asyncHandler(async (req,res)=>{
 
 //
 let createContact = asyncHandler(async(req,res)=>{
-    console.log(req.body);
+    
+    
+
     let contact = await ContactModel.create({
         username: req.body.username,
         email: req.body.email,
