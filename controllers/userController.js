@@ -2,7 +2,7 @@ import "dotenv/config";
 import asyncHandler from "express-async-handler"
 import userModel from "../models/userModel.js"
 import jwt from "jsonwebtoken"
-//Dodaj enkripciju!!!
+import bcrypt from "bcrypt";
 
 let loginUser = asyncHandler(async (req,res) =>{
     let { username, password } = req.body;
@@ -44,7 +44,7 @@ let verifyToken = asyncHandler (async (req, res, next) => {
     }
 })
 
-let getUser = asyncHandler(async (req,res)=>{   //Get users
+let getUser = asyncHandler(async (req,res)=>{
     res.json(req.body.user);
 })
 
